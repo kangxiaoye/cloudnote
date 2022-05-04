@@ -15,22 +15,22 @@ export default new Router({
       component: HelloWorld
     },
     {
-      path: '/Login',
+      path: '/login',
       name: 'Login',
       component: Login
     },
     {
-      path: '/NotebookList',
+      path: '/notebooks',
       name: 'NotebookList',
       component: NotebookList
     },
     {
-      path: '/NoteDetail/:noteId',
+      path: '/note',
       name: 'NoteDetail',
       component: NoteDetail
     },
     {
-      path: '/TrashDetail/:noteId',
+      path: '/trash',
       name: 'TrashDetail',
       component: TrashDetail
     }
