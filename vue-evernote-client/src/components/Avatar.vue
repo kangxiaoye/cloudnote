@@ -3,47 +3,42 @@
 </template>
 
 <script>
-  import Auth from '@/apis/auth'
-  import Bus from '@/helpers/bus'
 
+  import { mapGetters, mapActions } from 'vuex'
 
   export default {
     data() {
-      return {
-        username: '未登录'
-      }
+      return {}
     },
 
     created() {
-      Bus.$on('userInfo', user => {
-        this.username = user.username
-      })
+      this.setUser()
+    },
 
-      Auth.getInfo()
-        .then(res => {
-          if(res.isLogin) {
-            this.username = res.data.username
-          }
-        })
+    methods: {
+      ...mapActions({
+        'setUser': 'checkLogin'
+      })
     },
 
     computed: {
-      slug() {
-        return this.username.charAt(0)
-      }
+      ...mapGetters([
+        'username',
+        'slug'
+      ])
     }
   }
 </script>
 
 <style scoped>
-
   span {
     display: inline-block;
     width: 30px;
     height: 30px;
     text-align: center;
     line-height: 32px;
-    border-radius: 50%;background: #f2b81c;
+    border-radius: 50%;
+    background: #f2b81c;
     color: #fff;
     text-shadow: 1px 0 1px #795c19;
     font-weight: bold;
@@ -51,7 +46,4 @@
     font-size: 18px;
     margin-top: 15px;
   }
-  </style>
-<style scoped>
-
 </style>

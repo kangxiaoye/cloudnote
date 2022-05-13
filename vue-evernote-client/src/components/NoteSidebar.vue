@@ -1,6 +1,6 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note"  >添加笔记</span>
+    <span class="btn add-note" @click="onAddNote" >添加笔记</span>
     <el-dropdown class="notebook-title"  @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
         {{curBook.title}} <i class="iconfont icon-down"></i>
@@ -15,7 +15,7 @@
       <div>标题</div>
     </div>
     <ul class="notes">
-      <li v-for="note in notes" >
+      <li v-for="note in notes" :key="note.id">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{note.updatedAtFriendly}}</span>
           <span class="title">{{note.title}}</span>
@@ -29,43 +29,56 @@
   import Notebooks from '@/apis/notebooks'
   import Notes from '@/apis/notes'
   import Bus from '@/helpers/bus'
+  import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
+  export default {
+    created() {
+      this.getNotebooks()
+        .then(() => {
+          this.setCurBook({ curBookId: this.$route.query.notebookId })
+          return this.getNotes({ notebookId: this.curBook.id})
+        }).then(() => {
+        this.setCurNote({ curNoteId: this.$route.query.noteId })
+      })
+    },
 
-    export default {
-        name: "NoteSidebar",
+    data() {
+      return {}
+    },
 
-      created() {
-        Notebooks.getAll().then(res=>{
-          this.notebooks=res.data
-          this.curBook = this.notebooks.find(notebook => notebook.id == this.$route.query.notebookId)
-            || this.notebooks[0] || {}
-          return Notes.getAll({ notebookId: this.curBook.id })
-        }).then(res => {
-          this.notes = res.data
-          this.$emit('update:notes', this.notes)
-          Bus.$emit('update:notes', this.notes)
-        })
-      },
+    computed: {
+      ...mapGetters([
+        'notebooks',
+        'notes',
+        'curBook'
+      ])
+    },
 
-      data() {
-        return {
-          notebooks: [],
-          notes:[],
-          curBook: {}
+    methods: {
+      ...mapMutations([
+        'setCurBook',
+        'setCurNote'
+      ]),
+
+      ...mapActions([
+        'getNotebooks',
+        'getNotes',
+        'addNote'
+      ]),
+
+      handleCommand(notebookId) {
+        if(notebookId == 'trash') {
+          return this.$router.push({ path: '/trash'})
         }
+        this.$store.commit('setCurBook', { curBookId: notebookId})
+        this.getNotes({ notebookId })
       },
-      methods:{
-          handleCommand(notebookId){
-            if(notebookId=='trash'){
-              return this.$router.push({ path: '/trash'})
-            }
-            this.curBook = this.notebooks.find(notebook => notebook.id == notebookId)
-            Notes.getAll({notebookId}).then(res=>{
-              this.notes=res.data
-              this.$emit('update:notes', this.notes)
-            })
-          }
+
+      onAddNote() {
+        this.addNote({ notebookId: this.curBook.id })
       }
+
     }
+  }
 </script>
 
 <style lang="less" scoped>

@@ -28,85 +28,66 @@
   import Auth from '@/apis/auth'
   import Notebooks from '@/apis/notebooks'
   import { friendlyDate } from '@/helpers/util'
-
+  import { mapState, mapActions, mapGetters } from 'vuex'
   //window.Notebooks = Notebooks
 
   export default {
     data () {
       return {
-        notebooks: []
       }
     },
 
     created() {
-      Auth.getInfo()
-        .then(res => {
-          if(!res.isLogin) {
-            this.$router.push({path: '/login'})
-          }
-        })
+      this.checkLogin({ path: '/login' })
+      this.getNotebooks()
+    },
 
-      Notebooks.getAll()
-        .then(res => {
-          this.notebooks = res.data
-        })
+    computed: {
+      ...mapGetters(['notebooks'])
     },
 
     methods: {
+
+      ...mapActions([
+        'getNotebooks',
+        'addNotebook',
+        'updateNotebook',
+        'deleteNotebook',
+        'checkLogin'
+      ]),
+
       onCreate() {
-        this.$prompt('请输入笔记本标题', '创建笔记本', {
+        this.$prompt('输入新笔记本标题', '创建笔记本', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           inputPattern: /^.{1,30}$/,
           inputErrorMessage: '标题不能为空，且不超过30个字符'
-        }).then(({value})=>{
-          return  Notebooks.addNotebook({ title:value })
-        }).then(res => {
-            console.log(res)
-            res.data.friendlyCreatedAt = friendlyDate(res.data.createdAt)
-            this.notebooks.unshift(res.data)
-            this.$message({
-              type: 'success',
-              message: res.msg
-            });
-          })
+        }).then(({ value }) => {
+          this.addNotebook({ title: value })
+        })
       },
 
       onEdit(notebook) {
-        let title=''
-        this.$prompt('请输入笔记本标题', '编辑笔记本', {
+        let title = ''
+        this.$prompt('输入新笔记本标题', '修改笔记本', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
-          inputPattern: /^.{1,35}$/,
+          inputPattern: /^.{1,30}$/,
           inputValue: notebook.title,
           inputErrorMessage: '标题不能为空，且不超过30个字符'
-        }).then(({value})=>{
-          title=value
-          return  Notebooks.updateNotebook(notebook.id ,{ title:value })
-        }).then(res => {
-         notebook.title=title
-          this.$message({
-            type: 'success',
-            message: res.msg
-          });
+        }).then(({ value }) => {
+          this.updateNotebook({ notebookId: notebook.id, title: value })
         })
       },
 
       onDelete(notebook) {
-        this.$confirm('确定要删除笔记本吗?', '删除笔记本', {
+        this.$confirm('确认要删除笔记本吗', '删除笔记本', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'
-        }).then(()=>{
-          return Notebooks.deleteNotebook(notebook.id)
-        }).then(res=>{
-          this.notebooks.splice(this.notebooks.indexOf(notebook), 1)
-          this.$message({
-            type: 'success',
-            message: res.msg
-          });
+        }).then(() => {
+          this.deleteNotebook({ notebookId: notebook.id })
         })
-
       }
     }
   }
