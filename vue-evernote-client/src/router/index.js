@@ -11,8 +11,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'HelloWorld',
-      component: HelloWorld
+      name: 'NotebookList',
+      component: NotebookList
     },
     {
       path: '/login',
@@ -36,3 +36,7 @@ export default new Router({
     }
   ]
 })
+// const routerReplace = Router.prototype.replace
+// Router.prototype.replace = function (location) {
+//   return routerReplace.call(this, location).catch(error => error)
+// }

@@ -1,15 +1,16 @@
 <template>
   <div id="note" class="detail">
-    <NoteSidebar @update:notes="val => notes = val"></NoteSidebar>
+    <NoteSidebar ></NoteSidebar>
     <div class="note-detail">
-      <div class="note-empty" v-show="!curNote.id">请选择笔记</div>
+      <div class="note-empty" v-show="!curBook.id">请创建笔记本后</div>
+      <div class="note-empty" v-show="!curNote.id">选择或创建笔记</div>
       <div class="note-detail-ct" v-show="curNote.id">
         <div class="note-bar">
           <span> 创建日期: {{curNote.createdAtFriendly}}</span>
           <span> 更新日期: {{curNote.updatedAtFriendly}}</span>
           <span> {{statusText}}</span>
           <span class="iconfont icon-delete" @click="onDeleteNote"></span>
-          <span class="iconfont icon-fullscreen" @click="isShowPreview = !isShowPreview"></span>
+          <span class="iconfont icon-fullscreen" :class="isShowPreview?'icon-edit':'icon-eye'" @click="isShowPreview = !isShowPreview"></span>
         </div>
         <div class="note-title">
           <input type="text" v-model:value="curNote.title" @input="onUpdateNote" @keydown="statusText='正在输入...'"  placeholder="输入标题">
@@ -40,7 +41,7 @@
     data () {
       return {
         statusText: '笔记未改动',
-        isShowPreview: false
+        isShowPreview: true
       }
     },
 
@@ -50,7 +51,8 @@
     computed: {
       ...mapGetters([
         'notes',
-        'curNote'
+        'curNote',
+        'curBook'
       ]),
 
       previewContent() {

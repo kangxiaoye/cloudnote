@@ -1,21 +1,23 @@
 <template>
   <div class="note-sidebar">
-    <span class="btn add-note" @click="onAddNote" >添加笔记</span>
-    <el-dropdown class="notebook-title"  @command="handleCommand" placement="bottom">
+    <span v-if="curBook.id" class="btn add-note" @click="onAddNote" >添加笔记</span>
+    <span v-if="!curBook.id" class="notebook-title">无笔记本</span>
+    <el-dropdown v-if="curBook.id" class="notebook-title"  @command="handleCommand" placement="bottom">
       <span class="el-dropdown-link">
         {{curBook.title}} <i class="iconfont icon-down"></i>
       </span>
       <el-dropdown-menu slot="dropdown">
-        <el-dropdown-item v-for="notebook in notebooks" :command="notebook.id" :key="notebook.id">{{notebook.title}}</el-dropdown-item>
+        <el-dropdown-item v-for="notebook in notebooks" :key="notebook.id" :command="notebook.id">{{notebook.title}}</el-dropdown-item>
         <el-dropdown-item  command="trash">回收站</el-dropdown-item>
       </el-dropdown-menu>
     </el-dropdown>
+
     <div class="menu">
       <div>更新时间</div>
       <div>标题</div>
     </div>
     <ul class="notes">
-      <li v-for="note in notes" :key="note.id">
+      <li v-for="note in notes">
         <router-link :to="`/note?noteId=${note.id}&notebookId=${curBook.id}`">
           <span class="date">{{note.updatedAtFriendly}}</span>
           <span class="title">{{note.title}}</span>
@@ -32,14 +34,24 @@
   import { mapState, mapGetters, mapMutations, mapActions } from 'vuex'
   export default {
     created() {
+      console.log(0)
       this.getNotebooks()
         .then(() => {
+          console.log(1)
           this.setCurBook({ curBookId: this.$route.query.notebookId })
-          return this.getNotes({ notebookId: this.curBook.id})
+          if(this.curBook.id) return this.getNotes({ notebookId: this.curBook.id})
         }).then(() => {
         this.setCurNote({ curNoteId: this.$route.query.noteId })
+        this.$router.replace({
+          path: '/note',
+          query: {
+            noteId: this.curNote.id,
+            notebookId: this.curBook.id
+          }
+        }).catch(error => error)
       })
     },
+
 
     data() {
       return {}
@@ -49,7 +61,8 @@
       ...mapGetters([
         'notebooks',
         'notes',
-        'curBook'
+        'curBook',
+        'curNote'
       ])
     },
 
@@ -71,6 +84,14 @@
         }
         this.$store.commit('setCurBook', { curBookId: notebookId})
         this.getNotes({ notebookId })
+        this.setCurNote({  })
+        this.$router.replace({
+          path: '/note',
+          query: {
+            noteId: this.curNote.id,
+            notebookId: this.curBook.id
+          }
+        }).catch(error => error)
       },
 
       onAddNote() {

@@ -124,9 +124,8 @@
   }
 </script>
 
+<style lang="less" scoped>
 
-
-<style lang="less">
   .modal-mask {
     position: fixed;
     z-index: 100;
@@ -138,10 +137,12 @@
     display: table;
     transition: opacity .3s ease;
   }
+
   .modal-wrapper {
     display: table-cell;
     vertical-align: middle;
   }
+
   .modal-container {
     width: 800px;
     height: 500px;
@@ -152,73 +153,77 @@
     transition: all .3s ease;
     font-family: Helvetica, Arial, sans-serif;
     display: flex;
-    .main {
-      flex: 1;
-      background: #36bc64 url(//cloud.hunger-valley.com/17-12-13/38476998.jpg-middle) center center no-repeat;
-      background-size: contain;
-    }
-    .form {
-      width: 270px;
-      border-left: 1px solid #ccc;
-      overflow: hidden;
-      h3 {
-        padding: 10px 20px;
-        margin-top: -1px;
-        font-weight: normal;
-        font-size: 16px;
-        border-top: 1px solid #eee;
-        cursor: pointer;
-        &:nth-of-type(2){
-          border-bottom: 1px solid #eee;
-        }
+      .main {
+        flex: 1;
+        background: #9e9e9e url(../assets/notebook.jpg) center center no-repeat;
+        background-size: contain;
       }
-      .button {
-        background-color: #2bb964;
-        height: 36px;
-        line-height: 36px;
-        text-align: center;
-        font-weight: bold;
-        color: #fff;
-        border-radius: 4px;
-        margin-top: 18px;
-        cursor: pointer;
-      }
-      .login,.register {
-        padding: 0px 20px;
-        border-top: 1px solid #eee;
-        height: 0;
+      .form {
+        width: 270px;
+        border-left: 1px solid #ccc;
         overflow: hidden;
-        transition: height .4s;
-        &.show {
-          height: 193px;
-        }
-        input {
-          display: block;
-          width: 100%;
-          height: 35px;
-          line-height: 35px;
-          padding: 0 6px;
-          border-radius: 4px;
-          border: 1px solid #ccc;
-          outline: none;
-          font-size: 14px;
-          margin-top: 10px;
-        }
-        input:focus {
-          border: 3px solid #9dcaf8;
-        }
-        p {
-          font-size: 12px;
-          margin-top: 10px;
-          color: #444;
-        }
-        .error {
-          color: red;
-        }
+          h3 {
+            margin-top: -1px;
+            padding: 10px 20px;
+            font-weight: normal;
+            font-size: 16px;
+            border-top: 1px solid #eee;
+            cursor: pointer;
+
+             &:nth-of-type(2){
+                border-bottom: 1px solid #eee;
+              }
+          }
+
+          .button {
+            background-color: #9e9e9e;
+            height: 36px;
+            line-height: 36px;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            border-radius: 4px;
+            margin-top: 18px;
+            cursor: pointer;
+          }
+
+          .login,.register {
+            padding: 0px 20px;
+            border-top: 1px solid #eee;
+            height: 0;
+            transition: height .4s;
+            overflow: hidden;
+            &.show {
+              height: 193px;
+            }
+              input {
+                display: block;
+                width: 100%;
+                height: 35px;
+                line-height: 35px;
+                padding: 0 6px;
+                border-radius: 4px;
+                border: 1px solid #ccc;
+                outline: none;
+                font-size: 14px;
+                margin-top: 10px;
+              }
+              input:focus {
+                border: 3px solid #9dcaf8;
+              }
+
+             p {
+                font-size: 12px;
+                margin-top: 10px;
+                color: #444;
+              }
+              .error {
+                color: red;
+              }
       }
-      .login {
-        border-top: 0;
-      }
+          .login {
+            border-top: 0;
+          }
     }
   }
 </style>
